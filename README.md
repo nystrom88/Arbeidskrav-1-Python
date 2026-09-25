@@ -146,13 +146,6 @@ Try fixing the indentation around else: first. If it still behaves strangely, se
 
 ````
 
-Oppgave 2  
-
-Oppgave 3  
-
-Oppgave 4
-
-
 
 
 ## GitHub
