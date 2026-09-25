@@ -1,7 +1,6 @@
 import csv
-from itertools import count
 
-
+# open the csv file
 def get_data():
     with open("supporthenvendelser (3).csv", "r", encoding="utf-8") as file:
         reader = csv.DictReader(file)
@@ -9,6 +8,7 @@ def get_data():
     return data
 
 
+# make a new list one for the correct data and one for wrong data
 def fix_data(data_list):
     correct_data = []
     mistake_data = []
@@ -18,7 +18,7 @@ def fix_data(data_list):
         is_correct = True
 
         try:
-            # id
+            # remove id that is not valid
             id_row = int(data["id"])
             if id_row < 0:
                 mistake_data.append(
@@ -30,7 +30,7 @@ def fix_data(data_list):
             is_correct = False
 
         try:
-            # minutte
+            # remove the minutte row that is invalid
             minute = int(data["minutes"])
             if minute < 0:
                 mistake_data.append(
@@ -42,7 +42,7 @@ def fix_data(data_list):
             is_correct = False
 
         try:
-            # category
+            # remove the category row that has invalid row
             if data["category"] == "":
                 mistake_data.append(
                     f"Feil i rad {row}, feil i kolonen Category verdien er {data["category"]}, skal ha en kategori")
@@ -53,7 +53,7 @@ def fix_data(data_list):
             is_correct = False
 
         try:
-            # is resolved
+            # removes the row with invalid is_resolved columns
             if data["is_resolved"] not in ("yes", "no"):
                 mistake_data.append(
                     f"Feil i rad {row}, feil i kolone Resolved verdien er {data["is_resolved"]}, skal være Yes eller No")
@@ -66,12 +66,14 @@ def fix_data(data_list):
         if is_correct == True:
             correct_data.append(data)
 
+    # returns the corrected data in a new list and a new list for the date with mistake in the row
     return correct_data, mistake_data
 
 
 def total_issues(data_list):
     return len(data_list)
 
+    #show how many issues is per category
 def data_per_category(data_list):
     count_category = {}
 
@@ -84,6 +86,7 @@ def data_per_category(data_list):
 
     return count_category
 
+    # counting total minutes and the average time used
 def total_time(data_list):
     total_minutes = 0
     for x in data_list:
@@ -97,6 +100,7 @@ def average_time(data_list, total_minutes):
     return average_total_time
 
 
+    # show how many yes there are in the csv file
 def resolved_data(data_list):
     count_yes = {}
 
@@ -109,9 +113,9 @@ def resolved_data(data_list):
 
     return count_yes
 
+    # find the category with the most issues
 def most_asked_category(data_list):
     count_category = {}
-
 
     for x in data_list:
         category = x["category"]
@@ -130,10 +134,13 @@ def most_asked_category(data_list):
 
     return f"{high_category} har flest med {high_value}"
 
+    # filter the list dan showing the category with highest minute top
 def unresolved_sorted(data_list):
+    # creat new list for sorting
     unresolved = []
 
     for issue in data_list:
+        # have the minutes first so the list get sorted by minutes
         if issue["is_resolved"] == "no":
             row = [
                 int(issue["minutes"]),
@@ -146,10 +153,12 @@ def unresolved_sorted(data_list):
 
     for row in unresolved:
         print(f"ID: {row[1]}, kategori: {row[2]}, minutter: {row[0]} minutter")
+
+    #returns a new list sorted list
     return unresolved
 
 
-
+ # where the functions are saved
 def main():
     data = get_data()
     corrected_data_list, mistake_data_list = fix_data(data)
@@ -160,7 +169,6 @@ def main():
     resolved_count = resolved_data(corrected_data_list)
     most_asked = most_asked_category(corrected_data_list)
     unresolved_by_minute_length = unresolved_sorted(corrected_data_list)
-
 
 
 if __name__ == '__main__':
